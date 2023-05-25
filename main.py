@@ -16,6 +16,7 @@ func_dict = {1: best_buy.print_all_active_products, 2: best_buy.get_total_quanti
 
 
 def menu():
+    """prints menu and user selection"""
     print("""
         Store Menu
        ----------
