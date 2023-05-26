@@ -45,7 +45,7 @@ class Product:
 
     def show(self):
         """showing products details"""
-        print(f'{self.name}, Price: {self.price}, Quantity: {self.quantity} ')
+        print(self)
 
     def buy(self, quantity):
         """buying item if it's active, changes total quantity and returns the price"""
@@ -54,5 +54,40 @@ class Product:
         elif self.active == False:
             print("Sorry, this item isn't active")
         else:
-            self.set_quantity(self.quantity-quantity)
+            self.set_quantity(self.quantity - quantity)
             return self.price * quantity
+
+
+class NonStockedProduct(Product):
+    """Creates non-stocked product with self.quantity = 0"""
+    def __init__(self, name, price):
+        super().__init__(name, price, quantity=1)
+        self.quantity = 0
+
+    def __repr__(self):
+        """changes the representation while printing to the name/price/quantity"""
+        return f'{self.name}, Price: {self.price}, Quantity: Unlimited'
+
+    def buy(self, quantity):
+        """buying item if it's active, changes total quantity and returns the price"""
+        if not self.active:
+            print("Sorry, this item isn't active")
+        elif quantity <= 0:
+            raise ValueError("Wrong quantity, must be positive")
+        else:
+            return self.price * quantity
+
+class LimitedProduct(Product):
+    """Creates limited product with default maximum 1 value. This value can't be exceded during the order"""
+    def __init__(self, name, price, quantity, maximum=1):
+        super().__init__(name, price, quantity)
+        self.maximum_count = maximum
+        self.maximum_print = maximum
+
+    def __repr__(self):
+        """changes the representation while printing to the name/price/quantity"""
+        return f'{self.name}, Price: {self.price}, Limited to {self.maximum_print} per order!'
+
+    def reset_max_count(self):
+        self.maximum_count = self.maximum_print
+        return self.maximum_count
