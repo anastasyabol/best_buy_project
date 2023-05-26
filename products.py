@@ -11,7 +11,7 @@ class Product:
             raise ValueError("Price must be an int or float")
         self.price = float(price)
         if type(quantity) != int:
-            raise ValueError("Quantity must be an int")
+            raise TypeError("Quantity must be an int")
         self.set_quantity(quantity)
         if self.price <= 0 or self.quantity <= 0:
             raise ValueError("Wrong amount")
@@ -49,11 +49,10 @@ class Product:
 
     def buy(self, quantity):
         """buying item if it's active, changes total quantity and returns the price"""
-        if self.active == False:
+        if quantity > self.quantity:
+            raise ValueError(f"Wrong quantity! Amount higher than availible quantity: {self.quantity}")
+        elif self.active == False:
             print("Sorry, this item isn't active")
         else:
-            if quantity > self.quantity:
-                return f"Wrong quantity! Availivle amount is {self.quantity}"
-            else:
-                self.set_quantity(self.quantity-quantity)
-                return self.price * quantity
+            self.set_quantity(self.quantity-quantity)
+            return self.price * quantity
