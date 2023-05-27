@@ -17,7 +17,6 @@ class Product:
             raise ValueError("Wrong amount")
         self.promotion = None
 
-
     def __repr__(self):
         """changes the representation while printing to the name/price/quantity"""
         return f'{self.name}, Price: {self.price}, Quantity:{self.quantity}. Promotion: {self.promotion}'
@@ -50,7 +49,7 @@ class Product:
         print(self)
 
     def buy(self, quantity):
-        """buying item if it's active, changes total quantity and returns the price"""
+        """if item active, changes total quantity and returns the price. If promotion availible - calc accordingly"""
         if quantity > self.quantity:
             raise ValueError(f"Wrong quantity! Amount higher than availible quantity: {self.quantity}")
         elif self.active == False:
@@ -63,16 +62,17 @@ class Product:
             return self.price * quantity
 
     def get_promotion(self):
-        """returns if there is a promotion"""
+        """returns a promotion"""
         return self.promotion
+
     def set_promotion(self, promotion):
         """sets promotion"""
         self.promotion = promotion
 
 
-
 class NonStockedProduct(Product):
     """Creates non-stocked product with self.quantity = 0"""
+
     def __init__(self, name, price):
         super().__init__(name, price, quantity=1)
         self.quantity = 0
@@ -82,7 +82,7 @@ class NonStockedProduct(Product):
         return f'{self.name}, Price: {self.price}, Quantity: Unlimited. Promotion: {self.promotion}'
 
     def buy(self, quantity):
-        """buying item if it's active, changes total quantity and returns the price"""
+        """buying item if it's active and quantity is +. No tracking of self quantity. If promotion - calcs accordingly"""
         if not self.active:
             print("Sorry, this item isn't active")
         elif quantity <= 0:
@@ -92,8 +92,10 @@ class NonStockedProduct(Product):
         else:
             return self.price * quantity
 
+
 class LimitedProduct(Product):
     """Creates limited product with default maximum 1 value. This value can't be exceded during the order"""
+
     def __init__(self, name, price, quantity, maximum=1):
         super().__init__(name, price, quantity)
         self.maximum_count = maximum
@@ -104,5 +106,6 @@ class LimitedProduct(Product):
         return f'{self.name}, Price: {self.price}, Limited to {self.maximum_print} per order!'
 
     def reset_max_count(self):
+        """reset maximum for new orders"""
         self.maximum_count = self.maximum_print
         return self.maximum_count
