@@ -15,10 +15,12 @@ class Product:
         self.set_quantity(quantity)
         if self.price <= 0 or self.quantity <= 0:
             raise ValueError("Wrong amount")
+        self.promotion = None
+
 
     def __repr__(self):
         """changes the representation while printing to the name/price/quantity"""
-        return f'{self.name}, Price: {self.price}, Quantity:{self.quantity}'
+        return f'{self.name}, Price: {self.price}, Quantity:{self.quantity}. Promotion: {self.promotion}'
 
     def get_quantity(self):
         """returns quantity of the product"""
@@ -53,9 +55,20 @@ class Product:
             raise ValueError(f"Wrong quantity! Amount higher than availible quantity: {self.quantity}")
         elif self.active == False:
             print("Sorry, this item isn't active")
+        elif self.promotion is not None:
+            self.set_quantity(self.quantity - quantity)
+            return self.promotion.apply_promotion(self, quantity)
         else:
             self.set_quantity(self.quantity - quantity)
             return self.price * quantity
+
+    def get_promotion(self):
+        """returns if there is a promotion"""
+        return self.promotion
+    def set_promotion(self, promotion):
+        """sets promotion"""
+        self.promotion = promotion
+
 
 
 class NonStockedProduct(Product):
@@ -66,7 +79,7 @@ class NonStockedProduct(Product):
 
     def __repr__(self):
         """changes the representation while printing to the name/price/quantity"""
-        return f'{self.name}, Price: {self.price}, Quantity: Unlimited'
+        return f'{self.name}, Price: {self.price}, Quantity: Unlimited. Promotion: {self.promotion}'
 
     def buy(self, quantity):
         """buying item if it's active, changes total quantity and returns the price"""
@@ -74,6 +87,8 @@ class NonStockedProduct(Product):
             print("Sorry, this item isn't active")
         elif quantity <= 0:
             raise ValueError("Wrong quantity, must be positive")
+        elif self.promotion is not None:
+            return self.promotion.apply_promotion(self, quantity)
         else:
             return self.price * quantity
 
